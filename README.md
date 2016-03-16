@@ -47,4 +47,78 @@ MacBook-Pro-Retina-de-Alonso:cassandra-spark-twitter-scala-app-master aironman$ 
 Usage: Collect$<outputDirectory> <numTweetsToCollect> <intervalInSeconds> <partitionsEachInterval>
 MacBook-Pro-Retina-de-Alonso:cassandra-spark-twitter-scala-app-master aironman$ 
 
-You can see that this new command needs four parameters
+You can see that this new command needs four parameters, this is an output in my local machine: 
+
+
+MacBook-Pro-Retina-de-Alonso:my-twitter-cassandra-app aironman$ target/pack/bin/collect /tmp/tweets 50 10 1
+Initializing Streaming Spark Context...
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+16/03/16 10:23:48 INFO SparkContext: Running Spark version 1.4.0
+16/03/16 10:23:48 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/03/16 10:23:49 INFO SecurityManager: Changing view acls to: aironman
+16/03/16 10:23:49 INFO SecurityManager: Changing modify acls to: aironman
+16/03/16 10:23:49 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: Set(aironman); users with modify permissions: Set(aironman)
+16/03/16 10:23:49 INFO Slf4jLogger: Slf4jLogger started
+16/03/16 10:23:49 INFO Remoting: Starting remoting
+16/03/16 10:23:49 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkDriver@192.168.1.34:49324]
+16/03/16 10:23:49 INFO Utils: Successfully started service 'sparkDriver' on port 49324.
+16/03/16 10:23:49 INFO SparkEnv: Registering MapOutputTracker
+16/03/16 10:23:49 INFO SparkEnv: Registering BlockManagerMaster
+16/03/16 10:23:49 INFO DiskBlockManager: Created local directory at /private/var/folders/gn/pzkybyfd2g5bpyh47q0pp5nc0000gn/T/spark-1ed28d7f-a50b-422d-ab1d-8bcc55d2c6e1/blockmgr-220eb8ea-aba8-4054-baac-166f7ba921d3
+16/03/16 10:23:49 INFO MemoryStore: MemoryStore started with capacity 1966.1 MB
+16/03/16 10:23:49 INFO HttpFileServer: HTTP File server directory is /private/var/folders/gn/pzkybyfd2g5bpyh47q0pp5nc0000gn/T/spark-1ed28d7f-a50b-422d-ab1d-8bcc55d2c6e1/httpd-fca8296a-7c5e-4dea-9182-3925dd3c3dd9
+16/03/16 10:23:49 INFO HttpServer: Starting HTTP Server
+16/03/16 10:23:50 INFO Utils: Successfully started service 'HTTP file server' on port 49325.
+16/03/16 10:23:50 INFO SparkEnv: Registering OutputCommitCoordinator
+16/03/16 10:23:50 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+16/03/16 10:23:50 INFO SparkUI: Started SparkUI at http://192.168.1.34:4040
+16/03/16 10:23:50 INFO Executor: Starting executor ID driver on host localhost
+16/03/16 10:23:50 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 49326.
+16/03/16 10:23:50 INFO NettyBlockTransferService: Server created on 49326
+16/03/16 10:23:50 INFO BlockManagerMaster: Trying to register BlockManager
+16/03/16 10:23:50 INFO BlockManagerMasterEndpoint: Registering block manager localhost:49326 with 1966.1 MB RAM, BlockManagerId(driver, localhost, 49326)
+16/03/16 10:23:50 INFO BlockManagerMaster: Registered BlockManager
+Initialized Streaming Spark Context.
+Initializing Cassandra...
+host is: localhost
+port is: 9042
+keyspace is: test
+16/03/16 10:23:51 INFO DCAwareRoundRobinPolicy: Using data-center name 'datacenter1' for DCAwareRoundRobinPolicy (if this is incorrect, please provide the correct datacenter name with DCAwareRoundRobinPolicy constructor)
+16/03/16 10:23:51 INFO Cluster: New Cassandra host localhost/127.0.0.1:9042 added
+You have a open Cassandra session...
+things table have a new value...
+16/03/16 10:23:51 INFO ReceiverTracker: ReceiverTracker start
+....
+
+
+Actually the code is saving one entry within a keyspace named test and within this keyspace there is a table named things, i am saving into it a pair with the values (2,bar), as you can see in this output:
+
+Last login: Wed Mar 16 09:35:15 on ttys000
+MacBook-Pro-Retina-de-Alonso:~ aironman$ dsc-cassandra-2.1.9/bin/cqlsh
+Connected to Test Cluster at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 2.1.9 | CQL spec 3.2.0 | Native protocol v3]
+Use HELP for help.
+cqlsh> use test;
+cqlsh:test> select * from things;
+
+ id | name
+----+------
+  1 |  foo
+  2 |  bar
+
+(2 rows)
+cqlsh:test>
+
+In order to create this keyspace and this table, open cqlsh and run the next commands:
+
+CREATE KEYSPACE IF NOT EXISTS test WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': 1 };
+
+use test; // you have to change to this keyspace!
+
+CREATE TABLE things (
+  id int,
+  name text,
+  PRIMARY KEY (id)
+);
+
+Next things to do, i have to learn how to parse the json from twitter using if possible the scala-lang library and save it within the cassandra instance.
