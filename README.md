@@ -1,1 +1,1 @@
-# cassandra-park-twitter-scala-app
+# cassandra-spark-twitter-scala-app
