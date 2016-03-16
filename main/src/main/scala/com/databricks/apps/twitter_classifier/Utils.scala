@@ -34,10 +34,10 @@ object Utils {
       //System.setProperty("twitter4j.oauth.accessToken", cl.getOptionValue(ACCESS_TOKEN))
       //System.setProperty("twitter4j.oauth.accessTokenSecret", cl.getOptionValue(ACCESS_TOKEN_SECRET))
 
-      System.setProperty("twitter4j.oauth.consumerKey", "YOUR-CONSUMER-KEY")
-      System.setProperty("twitter4j.oauth.consumerSecret", "YOUR-CONSUMER-SECRET")
-      System.setProperty("twitter4j.oauth.accessToken", "YOUR-ACCESS-TOKEN")
-      System.setProperty("twitter4j.oauth.accessTokenSecret", "YOUR-ACCESS-TOKEN-SECRET")
+      System.setProperty("twitter4j.oauth.consumerKey", "jREUiik4pE9bKcBUYr5xsV7jt")
+      System.setProperty("twitter4j.oauth.consumerSecret", "LIUbDpJzgoJ8gz3w3OgQFGcMnMLyjPi9S3uBmtEdaLGzUBqkM9")
+      System.setProperty("twitter4j.oauth.accessToken", "453844423-3P6XqQ8hXWY1K47gEL1LU9lRg9kcrzfEXDvVTMZM")
+      System.setProperty("twitter4j.oauth.accessTokenSecret", "vrDBfnE1ya425mYIjM80OH8HmyYOQ3RUotk3t8gdFy6Yy")
       cl.getArgList.toArray
     } catch {
       case e: ParseException =>
