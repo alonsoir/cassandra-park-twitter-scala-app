@@ -50,15 +50,22 @@ object Collect {
    //   session.execute("CREATE TABLE IF NOT EXISTS things (id int, name text, PRIMARY KEY (id))")
     session.execute("INSERT INTO things (id, name) VALUES (2, 'bar');")
     println("things table have a new value...")
+
+
     tweetStream.foreachRDD((rdd, time) => {
       val count = rdd.count()
       if (count > 0) {
         val outputRDD = rdd.repartition(partitionsEachInterval)
         outputRDD.saveAsTextFile(outputDirectory + "/tweets_" + time.milliseconds.toString)
         println("outputRDD is: " + outputRDD)
-        outputRDD.take(1).foreach(indvArray => indvArray.foreach(print))
+        val aTweet = outputRDD.take(1).foreach(indvArray => indvArray.foreach(print))
+        println
+        println("aTweet: " + aTweet)
+        session.execute("INSERT INTO things (id, name) VALUES (" + numTweetsCollected + ",'" + aTweet + "');")
         numTweetsCollected += count
         if (numTweetsCollected > numTweetsToCollect) {
+          println
+          println("numTweetsCollected > numTweetsToCollect condition is reached. Stopping..." + numTweetsCollected + " " + count)
           System.exit(0)
         }
       }

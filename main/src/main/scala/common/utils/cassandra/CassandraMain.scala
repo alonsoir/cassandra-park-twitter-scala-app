@@ -22,4 +22,5 @@ object CassandraMain extends App{
 	println("Finishing connection to Cassandra")
 	session.close   
 	println("Finished!")
+    //System.exit
 }

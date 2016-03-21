@@ -7,6 +7,11 @@ scalaVersion := "2.10.4",
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 )
 
+lazy val jsonDependencies = Seq (
+"org.json4s" % "json4s-native_2.10" % "3.3.0" % "provided",
+"org.json4s" % "json4s-jackson_2.10" % "3.3.0" % "provided"
+)
+
 lazy val sparkDependencies = Seq (
 "org.apache.spark" %% "spark-core" % "1.4.0" , 
 "org.apache.spark" %% "spark-mllib" % "1.4.0" ,
@@ -29,9 +34,7 @@ lazy val cassandraDependencies = Seq (
 
 lazy val common = project.in(file("common"))
 .settings(commonSettings:_*)
-.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies))
-
-//val projectMainClass = "common.utils.cassandra.CassandraMain"
+.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ jsonDependencies))
 
 val projectMainClass = "com.databricks.apps.twitter_classifier.Collect"
 
@@ -39,7 +42,7 @@ lazy val main = project.in(file("main"))
   .dependsOn(common)
   .settings(commonSettings:_*)
   .settings(mainClass := Some(projectMainClass)
-  )	
+)	
 
 // If you need to specify main classes manually, use packSettings and packMain
 packSettings
@@ -47,4 +50,8 @@ packSettings
 // [Optional] Creating `hello` command that calls org.mydomain.Hello#main(Array[String]) 
 packMain := Map("collect" -> "com.databricks.apps.twitter_classifier.Collect")
 
+//packMain := Map("test-cassandra" -> "common.utils.cassandra.CassandraMain")
+
 resolvers += "Akka Repository" at "http://repo.akka.io/releases/"
+
+

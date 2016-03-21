@@ -7,3 +7,5 @@ resolvers += "Spray Repository" at "http://repo.spray.cc/"
 addSbtPlugin("org.xerial.sbt" % "sbt-pack" % "0.7.9")
 
 addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.3.3")
+
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
