@@ -133,3 +133,26 @@ TODO
 	to read from Cassandra and Mongo instances and compare the results.
 
 	4) get fun in the process!
+
+next step
+
+Use and adapt this to store data in mongo instance
+
+	dstream.foreachRDD { rdd =>
+	  rdd.foreachPartition { partitionOfRecords =>
+	    // ConnectionPool is a static, lazily initialized pool of connections
+	    val connection = ConnectionPool.getConnection()
+	    partitionOfRecords.foreach(record => connection.send(record))
+	    ConnectionPool.returnConnection(connection)  // return to the pool for future reuse
+	  }
+	}
+
+or 
+
+	tweets.foreachRDD { x => 
+	 x.foreach { x => 
+	  val db = connector("localhost", "rmongo", "rmongo", "pass")
+	  val dbcrud = new DBCrud(db, "table1")
+	  dbcrud.insert(x) 
+	 } 
+	}

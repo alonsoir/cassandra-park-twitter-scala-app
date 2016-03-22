@@ -45,7 +45,7 @@ object CollectWithMongo {
     tweetStream.foreachRDD(rdd => {
       val count = rdd.count()
       if (count>0) {
-        val topList = rdd.take(10)
+        val topList = rdd.take(count.toInt)
         println("\nPopular topics in last 10 seconds (%s total):".format(rdd.count()))
         //topList.foreach(println)
         //println
