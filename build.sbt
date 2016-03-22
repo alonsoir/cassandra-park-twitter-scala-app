@@ -7,6 +7,10 @@ scalaVersion := "2.10.4",
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 )
 
+lazy val mongoDependencies = Seq (
+"org.mongodb" %% "casbah" % "3.1.1"
+)
+
 lazy val jsonDependencies = Seq (
 "org.json4s" % "json4s-native_2.10" % "3.3.0" % "provided",
 "org.json4s" % "json4s-jackson_2.10" % "3.3.0" % "provided"
@@ -34,7 +38,7 @@ lazy val cassandraDependencies = Seq (
 
 lazy val common = project.in(file("common"))
 .settings(commonSettings:_*)
-.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ jsonDependencies))
+.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ jsonDependencies ++ mongoDependencies))
 
 val projectMainClass = "com.databricks.apps.twitter_classifier.Collect"
 
