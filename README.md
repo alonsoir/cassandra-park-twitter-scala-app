@@ -121,4 +121,8 @@ CREATE TABLE things (
   PRIMARY KEY (id)
 );
 
-Next things to do, i have to learn how to parse the json from twitter using if possible the scala-lang library and save it within the cassandra instance.
+TODO 
+
+	1) I have to learn how to parse the json from twitter using if possible the scala-lang library and save it within the cassandra instance.
+
+	2) save the tweet json into a mongodb instance, it looks more appropiate to store the full json into mongo...
