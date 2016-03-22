@@ -129,6 +129,7 @@ TODO
 	2) save the tweet json into a mongodb instance, it looks more appropiate to store the full json 
 	into mongo...
 
-	3) update the others main objects provided by the reference-app, ExamineAndTrain.scala and Train.scala to read from Cassandra and Mongo instances and compare the results.
+	3) update the others main objects provided by the reference-app, ExamineAndTrain.scala and Train.scala 
+	to read from Cassandra and Mongo instances and compare the results.
 
 	4) get fun in the process!
