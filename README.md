@@ -1,8 +1,8 @@
 # cassandra-spark-twitter-scala-app
 
-The purpose of is tiny project is to learn about how to interact with a Cassandra db using scala, in adittion to use Apache Spark and twitter.
+The purpose of this tiny project is to learn about how to interact with a Cassandra db and mongo db using scala, in order to use them with Apache Spark and twitter.
 
-The idea is to integrate the databricks reference app, which uses spark-streaming and machine learning techniques with the necessary code from Manuel Kiessling to interact with a cassandra instance.
+The idea is to integrate the databricks reference app, which uses spark-streaming and machine learning techniques with the necessary code from Manuel Kiessling to interact with a cassandra instance. I am going to use casbah to interact with a local mongodb instance.
 
 The project is packed with sbt-pack, so in order to get running this project, download it to a local folder and run sbt and inside it, pack, that is all, sbt-pack will compile and pack in a uber jar all the necessary and it will create a unix command to run the code:
 
@@ -128,3 +128,7 @@ TODO
 
 	2) save the tweet json into a mongodb instance, it looks more appropiate to store the full json 
 	into mongo...
+
+	3) update the others main objects provided by the reference-app, ExamineAndTrain.scala and Train.scala to read from Cassandra and Mongo instances and compare the results.
+
+	4) get fun in the process!
