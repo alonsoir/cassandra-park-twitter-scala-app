@@ -7,7 +7,7 @@ import org.apache.spark.streaming.twitter.TwitterUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
-//import common.utils.cassandra._
+import common.utils.cassandra._
 /**
  * Collect at least the specified number of tweets into json text files.
  */
@@ -43,11 +43,25 @@ object Collect {
     
     println("Initialized Streaming Spark Context.")  
 
+    println("Initializing Cassandra...")
+    val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
+    val session = Helper.createSessionAndInitKeyspace(uri)
+    println("You have a open Cassandra session...")
+   //   session.execute("CREATE TABLE IF NOT EXISTS things (id int, name text, PRIMARY KEY (id))")
+    session.execute("INSERT INTO things (id, name) VALUES (2, 'bar');")
+    println("things table have a new value...")
+
+
     tweetStream.foreachRDD((rdd, time) => {
       val count = rdd.count()
       if (count > 0) {
         val outputRDD = rdd.repartition(partitionsEachInterval)
         outputRDD.saveAsTextFile(outputDirectory + "/tweets_" + time.milliseconds.toString)
+        println("outputRDD is: " + outputRDD)
+        val aTweet = outputRDD.take(1).foreach(indvArray => indvArray.foreach(print))
+        println
+        println("aTweet: " + aTweet)
+        session.execute("INSERT INTO things (id, name) VALUES (" + numTweetsCollected + ",'" + aTweet + "');")
         numTweetsCollected += count
         if (numTweetsCollected > numTweetsToCollect) {
           println

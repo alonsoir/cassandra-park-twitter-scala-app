@@ -1,4 +1,4 @@
-Tpackage com.databricks.apps.twitter_classifier
+package com.databricks.apps.twitter_classifier
 
 import org.apache.spark.SparkConf
 import org.apache.spark.mllib.clustering.KMeansModel
