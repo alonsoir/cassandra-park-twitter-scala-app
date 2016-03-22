@@ -9,7 +9,7 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 /**
  * Pulls live tweets and filters them for tweets in the chosen cluster.
  */
-object Predict {
+object PredictWithMongo {
   def main(args: Array[String]) {
     if (args.length < 2) {
       System.err.println("Usage: " + this.getClass.getSimpleName + " <modelDirectory>  <clusterNumber>")

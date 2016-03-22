@@ -11,6 +11,7 @@ lazy val mongoDependencies = Seq (
 "org.mongodb" %% "casbah" % "3.1.1"
 )
 
+//this libraries are included within spark!
 lazy val jsonDependencies = Seq (
 "org.json4s" % "json4s-native_2.10" % "3.3.0" % "provided",
 "org.json4s" % "json4s-jackson_2.10" % "3.3.0" % "provided"
@@ -40,7 +41,7 @@ lazy val common = project.in(file("common"))
 .settings(commonSettings:_*)
 .settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ jsonDependencies ++ mongoDependencies))
 
-val projectMainClass = "com.databricks.apps.twitter_classifier.Collect"
+val projectMainClass = "com.databricks.apps.twitter_classifier.CollectWithMongo"
 
 lazy val main = project.in(file("main"))
   .dependsOn(common)
@@ -52,7 +53,7 @@ lazy val main = project.in(file("main"))
 packSettings
 
 // [Optional] Creating `hello` command that calls org.mydomain.Hello#main(Array[String]) 
-packMain := Map("collect" -> "com.databricks.apps.twitter_classifier.Collect")
+packMain := Map("collectWithMongo" -> "com.databricks.apps.twitter_classifier.CollectWithMongo")
 
 //packMain := Map("test-cassandra" -> "common.utils.cassandra.CassandraMain")
 

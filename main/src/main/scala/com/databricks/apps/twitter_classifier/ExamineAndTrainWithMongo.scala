@@ -8,7 +8,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 /**
  * Examine the collected tweets and trains a model based on them.
  */
-object ExamineAndTrainWithCassandra {
+object ExamineAndTrainWithMongo {
   val jsonParser = new JsonParser()
   val gson = new GsonBuilder().setPrettyPrinting().create()
 
