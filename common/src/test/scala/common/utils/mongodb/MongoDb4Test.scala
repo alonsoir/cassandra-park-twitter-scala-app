@@ -29,6 +29,7 @@ class MongoDb4Test extends FunSpec with Matchers{
 		val allDocs = coll.find()
 		println( allDocs )
 		for(doc <- allDocs) println( doc )
+		
 		val hello = MongoDBObject("hello" -> "world")
 		val helloWorld = coll.findOne( hello )
 
