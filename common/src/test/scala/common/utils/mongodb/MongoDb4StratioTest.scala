@@ -30,7 +30,7 @@ class MongoDb4StratioTest extends FunSpec with Matchers with MongoDefaultConstan
   	}
 
   	def prepareEnvironment(): MongoClient = {
-	    val mongoClient = MongoClient("127.0.0.1", 27017)
+	    val mongoClient = MongoClient(MongoHost, MongoPort)
 	    populateTable(mongoClient)
 	    mongoClient
   	}
@@ -42,7 +42,7 @@ class MongoDb4StratioTest extends FunSpec with Matchers with MongoDefaultConstan
 
   	private def populateTable(client: MongoClient): Unit = {
 
-	    val collection = client("highschool")("students")
+	    val collection = client(Database)(Collection)
 	    for (a <- 1 to 10) {
 	      collection.insert {
 	        MongoDBObject("id" -> a.toString,
@@ -59,7 +59,7 @@ class MongoDb4StratioTest extends FunSpec with Matchers with MongoDefaultConstan
   	}
 
   	private def cleanData(client: MongoClient): Unit = {
-    	val collection = client("highschool")("students")
+    	val collection = client(Database)(Collection)
     	collection.dropCollection()
   	}
 
@@ -84,12 +84,12 @@ class MongoDb4StratioTest extends FunSpec with Matchers with MongoDefaultConstan
        			""".stripMargin.replaceAll("\n", " "))
 
 
-    		//val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table("students")
-    		//studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
-
+    		val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table("students")
+    		studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
+    		println("tested a mongodb connection with stratio library...")
 		}//withSQLContext
-		
-		println("tested a mongodb connection with stratio library...")		
+		cleanEnvironment(mongoClient)
+		println("mongo enviroment is cleaned!")
     }//it("should just work")
   }//describe("testing a mongodb connection")
 
