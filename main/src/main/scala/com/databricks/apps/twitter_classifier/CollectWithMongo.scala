@@ -44,6 +44,15 @@ object CollectWithMongo {
 
     println("Initializing mongodb connector...")
 
+/*
+    tweets.foreachRDD { x => 
+      x.foreach { x => 
+      val db = connector("localhost", "rmongo", "rmongo", "pass")
+      val dbcrud = new DBCrud(db, "table1")
+      dbcrud.insert(x) 
+      } 
+    }
+*/
     tweetStream.foreachRDD(rdd => {
       val count = rdd.count()
       if (count>0) {

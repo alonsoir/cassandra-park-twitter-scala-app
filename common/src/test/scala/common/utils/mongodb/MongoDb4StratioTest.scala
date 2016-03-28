@@ -4,7 +4,6 @@ import org.scalatest.{Matchers, FunSpec}
 import com.mongodb.QueryBuilder
 import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.{MongoDBList, MongoDBObject}
-//import com.stratio.datasource.mongodb.examples.DataFrameAPIExample._
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.{SparkConf, SparkContext}

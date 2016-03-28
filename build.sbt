@@ -3,7 +3,7 @@ name := "spark-twitter-lang-classifier-using-cassandra"
 val commonSettings = Seq(
 organization := "com.aironman",
 version := "0.1",
-scalaVersion := "2.10.4",
+scalaVersion := "2.10.6",
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 )
 
