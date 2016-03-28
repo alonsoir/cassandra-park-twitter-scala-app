@@ -7,7 +7,7 @@ import org.apache.spark.streaming.twitter.TwitterUtils
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
-//import common.utils.cassandra._
+import com.mongodb.casbah.Imports._
 /**
  * Collect at least the specified number of tweets into json text files.
  */
@@ -42,6 +42,8 @@ object CollectWithMongo {
     
     println("Initialized Streaming Spark Context.")  
 
+    println("Initializing mongodb connector...")
+
     tweetStream.foreachRDD(rdd => {
       val count = rdd.count()
       if (count>0) {
@@ -52,8 +54,8 @@ object CollectWithMongo {
 
         for (tweet <- topList) {
           val atweet = gson.toJson(jsonParser.parse(tweet))
-          println("a tweet... " + atweet)
-          println
+          //println("a tweet... " + atweet)
+          //println
         }
         numTweetsCollected += count
         if (numTweetsCollected > numTweetsToCollect) {

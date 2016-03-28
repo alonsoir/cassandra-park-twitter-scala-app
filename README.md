@@ -1,6 +1,6 @@
 # cassandra-spark-twitter-scala-app
 
-The purpose of this tiny project is to learn about how to interact with a Cassandra db and mongo db using scala, in order to use them with Apache Spark and twitter.
+The purpose of this tiny project is to learn about how to interact with a Cassandra db and mongo db using scala, in order to use them with Apache Spark and Twitter.
 
 The idea is to integrate the databricks reference app, which uses spark-streaming and machine learning techniques with the necessary code from Manuel Kiessling to interact with a cassandra instance. I am going to use casbah to interact with a local mongodb instance.
 
@@ -136,7 +136,7 @@ TODO
 
 next step
 
-Use and adapt this to store data in mongo instance
+Use and adapt this to store data in mongo instance or use another library to save josn tweets into a local Mongo instance, ie, spark-mongodb from Stratio. 
 
 	dstream.foreachRDD { rdd =>
 	  rdd.foreachPartition { partitionOfRecords =>
@@ -156,3 +156,19 @@ or
 	  dbcrud.insert(x) 
 	 } 
 	}
+
+or
+	dstream.foreachRDD { rdd =>
+	  rdd.foreachPartition { partitionOfRecords =>
+	    // ConnectionPool is a static, lazily initialized pool of connections
+	    val connection = ConnectionPool.getConnection()
+	    partitionOfRecords.foreach(record => connection.send(record))
+	    ConnectionPool.returnConnection(connection)  // return to the pool for future reuse
+	  }
+	}
+
+
+http://spark.apache.org/docs/latest/streaming-programming-guide.html#design-patterns-for-using-foreachrdd
+
+https://github.com/Stratio/Spark-MongoDB/blob/master/spark-mongodb-examples/src/main/scala/com/stratio/datasource/mongodb/examples/DataFrameAPIExample.scala
+
