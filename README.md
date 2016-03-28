@@ -158,6 +158,7 @@ or
 	}
 
 or
+	
 	dstream.foreachRDD { rdd =>
 	  rdd.foreachPartition { partitionOfRecords =>
 	    // ConnectionPool is a static, lazily initialized pool of connections
