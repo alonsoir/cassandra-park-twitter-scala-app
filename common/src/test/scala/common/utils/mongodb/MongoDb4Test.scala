@@ -12,9 +12,9 @@ class MongoDb4Test extends FunSpec with Matchers{
 	//RegisterJodaTimeConversionHelpers()
 
 
-	describe("testing a mongodb connection") {
+	describe("testing a mongodb connection with casbah...") {
     it("should just work") {
-        println("testing mongodb connection...")
+        println("testing a mongodb connection with casbah...")
 
         val mongoClient = MongoClient("localhost", 27017)
         val db = mongoClient("test")
@@ -29,6 +29,7 @@ class MongoDb4Test extends FunSpec with Matchers{
 		val allDocs = coll.find()
 		println( allDocs )
 		for(doc <- allDocs) println( doc )
+		
 		val hello = MongoDBObject("hello" -> "world")
 		val helloWorld = coll.findOne( hello )
 

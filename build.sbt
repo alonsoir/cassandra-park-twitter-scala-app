@@ -3,21 +3,25 @@ name := "spark-twitter-lang-classifier-using-cassandra"
 val commonSettings = Seq(
 organization := "com.aironman",
 version := "0.1",
-scalaVersion := "2.10.4",
+scalaVersion := "2.10.6",
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 )
 
+lazy val nscala-time = Seq (
+"com.github.nscala-time" %% "nscala-time" % "2.12.0"
+)
 lazy val mongoDependencies = Seq (
-"org.mongodb" %% "casbah" % "3.1.1"
+"com.stratio.datasource" % "spark-mongodb_2.10" % "0.11.1"
 )
 
-lazy val jsonDependencies = Seq (
-"org.json4s" % "json4s-native_2.10" % "3.3.0" % "provided",
-"org.json4s" % "json4s-jackson_2.10" % "3.3.0" % "provided"
-)
+//this libraries are included within spark!
+//lazy val jsonDependencies = Seq (
+//"org.json4s" % "json4s-native_2.10" % "3.3.0" % "provided",
+//"org.json4s" % "json4s-jackson_2.10" % "3.3.0" % "provided"
+//)
 
 lazy val sparkDependencies = Seq (
-"org.apache.spark" %% "spark-core" % "1.4.0" , 
+"org.apache.spark" %% "spark-core" % "1.4.0" exclude("com.fasterxml.jackson.core", "jackson-databind"), 
 "org.apache.spark" %% "spark-mllib" % "1.4.0" ,
 "org.apache.spark" %% "spark-sql" % "1.4.0" ,
 "org.apache.spark" %% "spark-streaming" % "1.4.0",
@@ -38,9 +42,9 @@ lazy val cassandraDependencies = Seq (
 
 lazy val common = project.in(file("common"))
 .settings(commonSettings:_*)
-.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ jsonDependencies ++ mongoDependencies))
+.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ mongoDependencies ++ nscala-time))
 
-val projectMainClass = "com.databricks.apps.twitter_classifier.Collect"
+val projectMainClass = "com.databricks.apps.twitter_classifier.CollectWithMongo"
 
 lazy val main = project.in(file("main"))
   .dependsOn(common)
@@ -52,7 +56,7 @@ lazy val main = project.in(file("main"))
 packSettings
 
 // [Optional] Creating `hello` command that calls org.mydomain.Hello#main(Array[String]) 
-packMain := Map("collect" -> "com.databricks.apps.twitter_classifier.Collect")
+packMain := Map("collectWithMongo" -> "com.databricks.apps.twitter_classifier.CollectWithMongo")
 
 //packMain := Map("test-cassandra" -> "common.utils.cassandra.CassandraMain")
 
