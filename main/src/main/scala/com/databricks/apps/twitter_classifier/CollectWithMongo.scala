@@ -1,6 +1,7 @@
 package com.databricks.apps.twitter_classifier
 
 import java.io.File
+import java.util.Date
 
 import com.google.gson.{Gson,GsonBuilder, JsonParser}
 import org.apache.spark.streaming.twitter.TwitterUtils
@@ -8,7 +9,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 import com.mongodb.casbah.Imports._
-
 import com.mongodb.QueryBuilder
 import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.commons.{MongoDBList, MongoDBObject}
@@ -16,7 +16,7 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.{SparkConf, SparkContext}
 
-import com.github.nscala_time.time.Imports._
+//import com.github.nscala_time.time.Imports._
 
 /**
  * Collect at least the specified number of json tweets into cassandra, mongo...
@@ -62,6 +62,7 @@ object CollectWithMongo {
         "<numTweetsToCollect> <intervalInSeconds> <partitionsEachInterval>")
       System.exit(1)
     }
+
     val Array(Utils.IntParam(numTweetsToCollect),  Utils.IntParam(intervalSecs), Utils.IntParam(partitionsEachInterval)) =Utils.parseCommandLineWithTwitterCredentials(args)
 
     println("Initializing Streaming Spark Context...")
@@ -106,7 +107,7 @@ object CollectWithMongo {
               val atweet = gson.toJson(jsonParser.parse(tweet))
               //println("a tweet... " + atweet)
               //println
-              collection.insert {MongoDBObject("id" -> (DateTime.now).millis,"tweets" -> s"description $atweet")}
+              collection.insert {MongoDBObject("id" -> new Date(),"tweets" -> s"description $atweet")}
 
             }//for (tweet <- topList)
             numTweetsCollected += count

@@ -144,3 +144,5 @@ interesting links:
 
 	https://github.com/nscala-time/nscala-time
 
+	https://github.com/xerial/sbt-pack
+

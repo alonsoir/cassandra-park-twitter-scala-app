@@ -7,9 +7,10 @@ scalaVersion := "2.10.6",
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 )
 
-lazy val nscala-time = Seq (
-"com.github.nscala-time" %% "nscala-time" % "2.12.0"
-)
+//lazy val nscala_time = Seq (
+//"com.github.nscala-time" %% "nscala-time" % "2.12.0"
+//)
+
 lazy val mongoDependencies = Seq (
 "com.stratio.datasource" % "spark-mongodb_2.10" % "0.11.1"
 )
@@ -42,7 +43,7 @@ lazy val cassandraDependencies = Seq (
 
 lazy val common = project.in(file("common"))
 .settings(commonSettings:_*)
-.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ mongoDependencies ++ nscala-time))
+.settings(libraryDependencies ++= (testDependencies ++ cassandraDependencies ++ sparkDependencies ++ mongoDependencies))
 
 val projectMainClass = "com.databricks.apps.twitter_classifier.CollectWithMongo"
 
@@ -52,11 +53,15 @@ lazy val main = project.in(file("main"))
   .settings(mainClass := Some(projectMainClass)
 )	
 
+packAutoSettings
+
 // If you need to specify main classes manually, use packSettings and packMain
-packSettings
+//packSettings
 
 // [Optional] Creating `hello` command that calls org.mydomain.Hello#main(Array[String]) 
-packMain := Map("collectWithMongo" -> "com.databricks.apps.twitter_classifier.CollectWithMongo")
+//packMain := Map("collectWithMongo" -> "com.databricks.apps.twitter_classifier.CollectWithMongo")
+
+//packMain := Map("examineAndTrainWithMongo" -> "com.databricks.apps.twitter_classifier.ExamineAndTrainWithMongo")
 
 //packMain := Map("test-cassandra" -> "common.utils.cassandra.CassandraMain")
 
