@@ -16,13 +16,14 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.functions._
 import org.apache.spark.{SparkConf, SparkContext}
 
+import com.github.nscala_time.time.Imports._
 
 /**
- * Collect at least the specified number of tweets into json text files, cassandra, mongo...
+ * Collect at least the specified number of json tweets into cassandra, mongo...
 
 on mongo shell:
 
- use highschool;
+ use alonsodb;
  db.tweets.find();
  */
 object CollectWithMongo {
@@ -30,7 +31,7 @@ object CollectWithMongo {
   private var numTweetsCollected = 0L
   private var partNum = 0
   
-  private val Database = "highschool"
+  private val Database = "alonsodb"
   private val Collection = "tweets"
   private val MongoHost = "127.0.0.1"
   private val MongoPort = 27017
@@ -41,31 +42,12 @@ object CollectWithMongo {
 
   private def prepareMongoEnvironment(): MongoClient = {
       val mongoClient = MongoClient(MongoHost, MongoPort)
-      //populateMongoTable(mongoClient)
       mongoClient
-    }
+  }
 
   private def cleanMongoEnvironment(mongoClient: MongoClient) = {
       cleanMongoData(mongoClient)
       mongoClient.close()
-    }
-
-  private def populateMongoTable(client: MongoClient): Unit = {
-
-      val collection = client(Database)(Collection)
-      for (a <- 1 to 10) {
-        collection.insert {
-          MongoDBObject("id" -> a.toString,
-            "age" -> (10 + a),
-            "description" -> s"description $a",
-            "enrolled" -> (a % 2 == 0),
-            "name" -> s"Name $a"
-          )//MongoDBObject
-        }//collection.insert
-      }//for
-
-      collection.update(QueryBuilder.start("age").greaterThan(14).get, MongoDBObject(("$set", MongoDBObject(("optionalField", true)))), multi = true)
-      collection.update(QueryBuilder.start("age").is(14).get, MongoDBObject(("$set", MongoDBObject(("fieldWithSubDoc", MongoDBObject(("subDoc", MongoDBList("foo", "bar"))))))))
   }
 
   private def cleanMongoData(client: MongoClient): Unit = {
@@ -85,7 +67,6 @@ object CollectWithMongo {
     println("Initializing Streaming Spark Context...")
     val conf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local[4]")
     val sc = new SparkContext(conf)
-    //i want to reuse this in sqlContext
     val ssc = new StreamingContext(sc, Seconds(intervalSecs))
 
     val tweetStream = TwitterUtils.createStream(ssc, Utils.getAuth).map(gson.toJson(_))
@@ -104,7 +85,7 @@ object CollectWithMongo {
         println("Creating temporary table in mongo instance...")
         sqlContext.sql(
             s"""|CREATE TEMPORARY TABLE $Collection
-              |(id STRING, age INT, description STRING, enrolled BOOLEAN, name STRING, optionalField BOOLEAN)
+              |(id STRING, tweets STRING)
               |USING $MongoProvider
               |OPTIONS (
               |host '$MongoHost:$MongoPort',
@@ -125,14 +106,7 @@ object CollectWithMongo {
               val atweet = gson.toJson(jsonParser.parse(tweet))
               //println("a tweet... " + atweet)
               //println
-              collection.insert {
-                MongoDBObject("id" -> count.toString,
-                "age" -> (10 + count),
-                "description" -> s"description $atweet",
-                "enrolled" -> (count % 2 == 0),
-                "name" -> s"Name $count"
-                )//MongoDBObject
-              }
+              collection.insert {MongoDBObject("id" -> (DateTime.now).millis,"tweets" -> s"description $atweet")}
 
             }//for (tweet <- topList)
             numTweetsCollected += count
@@ -145,8 +119,10 @@ object CollectWithMongo {
             }
           }//if(count>0)
         })//tweetStream.foreachRDD(rdd =>
-        val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
-        studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
+        //val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
+        //studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
+        val tweetsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
+        tweetsDF.show(5)
         println("tested a mongodb connection with stratio library...")
     } finally {
         //sc.stop()

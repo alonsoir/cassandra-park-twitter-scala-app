@@ -173,3 +173,5 @@ http://spark.apache.org/docs/latest/streaming-programming-guide.html#design-patt
 
 https://github.com/Stratio/Spark-MongoDB/blob/master/spark-mongodb-examples/src/main/scala/com/stratio/datasource/mongodb/examples/DataFrameAPIExample.scala
 
+https://github.com/nscala-time/nscala-time
+
