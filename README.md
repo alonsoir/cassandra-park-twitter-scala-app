@@ -124,54 +124,23 @@ In order to create this keyspace and this table, open cqlsh and run the next com
 TODO 
 
 	1) I have to learn how to parse the json from twitter using if possible the scala-lang library and save 
-	it within the cassandra instance.
+	it within the cassandra instance. UPDATE, Cassandra is not probably the best nosql database to save tweets, 
+	i think a document oriented database like mongo is a best fit...
 
 	2) save the tweet json into a mongodb instance, it looks more appropiate to store the full json 
-	into mongo...
+	into mongo...DONE! using stratio library, thank you guys!
 
 	3) update the others main objects provided by the reference-app, ExamineAndTrain.scala and Train.scala 
-	to read from Cassandra and Mongo instances and compare the results.
+	to read from Cassandra and Mongo instances and compare the results. IN PROGRESS...
 
 	4) get fun in the process!
 
-next step
 
-Use and adapt this to store data in mongo instance or use another library to save josn tweets into a local Mongo instance, ie, spark-mongodb from Stratio. 
+interesting links:
 
-	dstream.foreachRDD { rdd =>
-	  rdd.foreachPartition { partitionOfRecords =>
-	    // ConnectionPool is a static, lazily initialized pool of connections
-	    val connection = ConnectionPool.getConnection()
-	    partitionOfRecords.foreach(record => connection.send(record))
-	    ConnectionPool.returnConnection(connection)  // return to the pool for future reuse
-	  }
-	}
+	http://spark.apache.org/docs/latest/streaming-programming-guide.html#design-patterns-for-using-foreachrdd
 
-or 
+	https://github.com/Stratio/Spark-MongoDB/blob/master/spark-mongodb-examples/src/main/scala/com/stratio/datasource/mongodb/examples/DataFrameAPIExample.scala
 
-	tweets.foreachRDD { x => 
-	 x.foreach { x => 
-	  val db = connector("localhost", "rmongo", "rmongo", "pass")
-	  val dbcrud = new DBCrud(db, "table1")
-	  dbcrud.insert(x) 
-	 } 
-	}
-
-or
-	
-	dstream.foreachRDD { rdd =>
-	  rdd.foreachPartition { partitionOfRecords =>
-	    // ConnectionPool is a static, lazily initialized pool of connections
-	    val connection = ConnectionPool.getConnection()
-	    partitionOfRecords.foreach(record => connection.send(record))
-	    ConnectionPool.returnConnection(connection)  // return to the pool for future reuse
-	  }
-	}
-
-
-http://spark.apache.org/docs/latest/streaming-programming-guide.html#design-patterns-for-using-foreachrdd
-
-https://github.com/Stratio/Spark-MongoDB/blob/master/spark-mongodb-examples/src/main/scala/com/stratio/datasource/mongodb/examples/DataFrameAPIExample.scala
-
-https://github.com/nscala-time/nscala-time
+	https://github.com/nscala-time/nscala-time
 
