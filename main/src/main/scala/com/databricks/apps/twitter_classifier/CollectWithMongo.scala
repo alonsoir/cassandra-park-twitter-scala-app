@@ -123,7 +123,8 @@ object CollectWithMongo {
         //val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
         //studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
         val tweetsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
-        tweetsDF.show(5)
+        //tweetsDF.show(numTweetsCollected.toInt)
+        tweetsDF.show(50)
         println("tested a mongodb connection with stratio library...")
     } finally {
         //sc.stop()
