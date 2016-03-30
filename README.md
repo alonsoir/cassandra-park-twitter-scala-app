@@ -146,3 +146,66 @@ interesting links:
 
 	https://github.com/xerial/sbt-pack
 
+	http://blog.optimal.io/how-to-find-the-schema-of-a-collection-in-mongodb/
+
+
+
+Updating libraries to latest versions provokes an exception with Twitter4j! i still can stream tweets from twitter but the exception happens
+
+stacktrace:
+
+	16/03/30 12:29:40 INFO TwitterStreamImpl: Task twitter4j.StatusStreamBase$1@38ef16c6 rejected from java.util.concurrent.ThreadPoolExecutor@5b4fd95b[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 919]
+	16/03/30 12:29:40 INFO StreamingContext: Invoking stop(stopGracefully=false) from shutdown hook
+	16/03/30 12:29:40 WARN ReceiverSupervisorImpl: Restarting receiver with delay 2000 ms: Error receiving tweets
+	java.util.concurrent.RejectedExecutionException: Task twitter4j.StatusStreamBase$1@38ef16c6 rejected from java.util.concurrent.ThreadPoolExecutor@5b4fd95b[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 919]
+		at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)
+		at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)
+		at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)
+		at twitter4j.DispatcherImpl.invokeLater(DispatcherImpl.java:58)
+		at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:80)
+		at twitter4j.StatusStreamImpl.next(StatusStreamImpl.java:56)
+		at twitter4j.TwitterStreamImpl$TwitterStreamConsumer.run(TwitterStreamImpl.java:568)
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Stopping receiver with message: Restarting receiver with delay 2000ms: Error receiving tweets: java.util.concurrent.RejectedExecutionException: Task twitter4j.StatusStreamBase$1@38ef16c6 rejected from java.util.concurrent.ThreadPoolExecutor@5b4fd95b[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 919]
+	16/03/30 12:29:40 INFO ReceiverTracker: Sent stop signal to all 1 receivers
+	16/03/30 12:29:40 INFO TwitterReceiver: Twitter receiver stopped
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Received stop signal
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Called receiver onStop
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Deregistering receiver 0
+	16/03/30 12:29:40 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Error receiving tweets - java.util.concurrent.RejectedExecutionException: Task twitter4j.StatusStreamBase$1@38ef16c6 rejected from java.util.concurrent.ThreadPoolExecutor@5b4fd95b[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 919]
+		at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:2047)
+		at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:823)
+		at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:1369)
+		at twitter4j.DispatcherImpl.invokeLater(DispatcherImpl.java:58)
+		at twitter4j.StatusStreamBase.handleNextElement(StatusStreamBase.java:80)
+		at twitter4j.StatusStreamImpl.next(StatusStreamImpl.java:56)
+		at twitter4j.TwitterStreamImpl$TwitterStreamConsumer.run(TwitterStreamImpl.java:568)
+
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Stopped receiver 0
+	16/03/30 12:29:40 INFO ReceiverSupervisorImpl: Stopping receiver with message: Stopped by driver: 
+	16/03/30 12:29:40 WARN ReceiverSupervisorImpl: Receiver has been stopped
+	16/03/30 12:29:40 INFO BlockGenerator: Stopping BlockGenerator
+	16/03/30 12:29:41 INFO MemoryStore: Block input-0-1459333780800 stored as bytes in memory (estimated size 65.9 KB, free 1087.7 KB)
+	16/03/30 12:29:41 INFO BlockManagerInfo: Added input-0-1459333780800 in memory on localhost:61721 (size: 65.9 KB, free: 2.4 GB)
+	16/03/30 12:29:41 WARN BlockManager: Block input-0-1459333780800 replicated to only 0 peer(s) instead of 1 peers
+	16/03/30 12:29:41 INFO BlockGenerator: Pushed block input-0-1459333780800
+	16/03/30 12:29:41 INFO RecurringTimer: Stopped timer for BlockGenerator after time 1459333781200
+	16/03/30 12:29:41 INFO BlockGenerator: Waiting for block pushing thread to terminate
+	16/03/30 12:29:41 INFO BlockGenerator: Pushing out the last 0 blocks
+	16/03/30 12:29:41 INFO BlockGenerator: Stopped block pushing thread
+	16/03/30 12:29:41 INFO BlockGenerator: Stopped BlockGenerator
+	Exception in thread "receiver-supervisor-future-0" java.lang.Error: java.lang.InterruptedException: sleep interrupted
+		at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1148)
+		at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+		at java.lang.Thread.run(Thread.java:745)
+	Caused by: java.lang.InterruptedException: sleep interrupted
+		at java.lang.Thread.sleep(Native Method)
+		at org.apache.spark.streaming.receiver.ReceiverSupervisor$$anonfun$restartReceiver$1.apply$mcV$sp(ReceiverSupervisor.scala:195)
+		at org.apache.spark.streaming.receiver.ReceiverSupervisor$$anonfun$restartReceiver$1.apply(ReceiverSupervisor.scala:188)
+		at org.apache.spark.streaming.receiver.ReceiverSupervisor$$anonfun$restartReceiver$1.apply(ReceiverSupervisor.scala:188)
+		at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24)
+		at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24)
+		at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+		... 2 more
+
+
+

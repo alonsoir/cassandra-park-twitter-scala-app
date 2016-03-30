@@ -45,6 +45,11 @@ object CollectWithMongo {
       mongoClient
   }
 
+  private def closeMongoEnviroment(mongoClient : MongoClient) = {
+      mongoClient.close()
+      println("mongoclient closed!")
+  }
+
   private def cleanMongoEnvironment(mongoClient: MongoClient) = {
       cleanMongoData(mongoClient)
       mongoClient.close()
@@ -107,7 +112,7 @@ object CollectWithMongo {
               val atweet = gson.toJson(jsonParser.parse(tweet))
               //println("a tweet... " + atweet)
               //println
-              collection.insert {MongoDBObject("id" -> new Date(),"tweets" -> s"description $atweet")}
+              collection.insert {MongoDBObject("id" -> new Date(),"tweets" -> atweet)}
 
             }//for (tweet <- topList)
             numTweetsCollected += count
@@ -115,16 +120,18 @@ object CollectWithMongo {
               println
               println("numTweetsCollected > numTweetsToCollect condition is reached. Stopping..." + numTweetsCollected + " " + count)
               //cleanMongoEnvironment(mongoClient)
+              closeMongoEnviroment(mongoClient)
               println("shutdown mongodb connector...")
               System.exit(0)
             }
           }//if(count>0)
         })//tweetStream.foreachRDD(rdd =>
+        
         //val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
         //studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
         val tweetsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
         //tweetsDF.show(numTweetsCollected.toInt)
-        tweetsDF.show(50)
+        tweetsDF.show(5)
         println("tested a mongodb connection with stratio library...")
     } finally {
         //sc.stop()
