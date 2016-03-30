@@ -31,6 +31,7 @@ object ExamineAndTrainWithMongo {
   }
 
   private def closeMongoEnviroment(mongoClient : MongoClient) = {
+      println
       mongoClient.close()
       println("mongoclient closed!")
   }
@@ -63,60 +64,53 @@ object ExamineAndTrainWithMongo {
     val collection = mongoClient(Database)(Collection)
     
     println("Initialized mongodb connector...")
-
+    //loading dataframe
     val tweetsDF = sqlContext.read.format("com.stratio.datasource.mongodb")
                   .option("host",s"$MongoHost:$MongoPort")
                   .option("database",s"$Database")
                   .option("collection",s"$Collection")
                   .load()
-                  //.table(s"$Collection")
-                  //.cache()
     
-    //tweetsDF.show(50)
-    // Pretty print some of the tweets.
-    //val tweets = sc.textFile(tweetInput)
-    println("------------Sample JSON Tweets-------")
-    //for (tweet <- tweets.take(5)) {
-    //  println(gson.toJson(jsonParser.parse(tweet)))
-    //}
+    //tweetsDF.show(5)
+    
+    println("tweets in mongo instance: " + tweetsDF.count())
+    println("actual schema is: ")
+    tweetsDF.printSchema()
+    println
+    //tweetsDF.select("tweets").show(500)
 
-    //val tweetTable = sqlContext.read.json(tweetInput).cache()
-    //tweetTable.registerTempTable("tweetTable")
+    // Register the DataFrames as a table.
+    tweetsDF.registerTempTable("mytweets")
 
-    println("------Tweet table Schema---")
-    //tweetTable.printSchema()
-    //tweetsDF.printSchema()
+    // SQL statements can be run by using the sql methods provided by sqlContext.
+    //val results = sqlContext.sql("SELECT id,tweets FROM mytweets")
 
-    println("----Sample Tweet Text-----")
-    //sqlContext.sql("SELECT text FROM tweetTable LIMIT 10").collect().foreach(println)
+    // The results of SQL queries are DataFrames and support all the normal RDD operations.
+    // The columns of a row in the result can be accessed by field index or by field name.
+    //results.map(t => "id: " + t(0)).collect().foreach(println)
+    //results.map(t => "tweets: " + t(1)).collect().foreach(println)
 
-    //sqlContext.sql("SELECT tweets FROM tweets LIMIT 10").collect().foreach(println)
-
-    //println("------Sample Lang, Name, text---")
-    //sqlContext.sql("SELECT user.lang, user.name, text FROM tweetTable LIMIT 1000").collect().foreach(println)
-
-    //println("------Total count by languages Lang, count(*)---")
-    //sqlContext.sql("SELECT user.lang, COUNT(*) as cnt FROM tweetTable GROUP BY user.lang ORDER BY cnt DESC LIMIT 25").collect.foreach(println)
-    /*
     println("--- Training the model and persist it")
-    val texts = sqlContext.sql("SELECT text from tweetTable").map(_.toString)
-    // Cache the vectors RDD since it will be used for all the KMeans iterations.
+    val texts = sqlContext.sql("SELECT tweets from mytweets").map(_.toString)
+        // Cache the vectors RDD since it will be used for all the KMeans iterations.
     val vectors = texts.map(Utils.featurize).cache()
     vectors.count()  // Calls an action on the RDD to populate the vectors cache.
     val model = KMeans.train(vectors, numClusters, numIterations)
     sc.makeRDD(model.clusterCenters, numClusters).saveAsObjectFile(outputModelDir)
 
-    val some_tweets = texts.take(100)
+    val some_tweets = texts.take(10000)
     println("----Example tweets from the clusters")
     for (i <- 0 until numClusters) {
       println(s"\nCLUSTER $i:")
       some_tweets.foreach { t =>
-        if (model.predict(Utils.featurize(t)) == i) {
-          println(t)
-        }
-      }
-    }
-    */
+                          if (model.predict(Utils.featurize(t)) == i) {
+                            //println("t is: " + t)
+                            print(".")
+                          }
+                          }//some_tweets.foreach
+    }//for (i <- 0 until numClusters)
+    
     closeMongoEnviroment(mongoClient)
-  }
-}
+    println("Closed mongodb connector...")
+}//main
+}//object ExamineAndTrainWithMongo
