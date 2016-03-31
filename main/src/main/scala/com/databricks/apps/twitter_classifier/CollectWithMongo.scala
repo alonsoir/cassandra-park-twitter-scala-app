@@ -127,7 +127,6 @@ object CollectWithMongo {
           }//if(count>0)
         })//tweetStream.foreachRDD(rdd =>
         
-        //val studentsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
         //studentsDF.where(studentsDF("age") > 15).groupBy(studentsDF("enrolled")).agg(avg("age"), max("age")).show(5)
         val tweetsDF = sqlContext.read.format("com.stratio.datasource.mongodb").table(s"$Collection")
         //tweetsDF.show(numTweetsCollected.toInt)
@@ -138,23 +137,6 @@ object CollectWithMongo {
         println("finished withSQLContext...")
     }
 
-    
-
-/*
-    tweetStream.foreachRDD((rdd, time) => {
-      val count = rdd.count()
-      if (count > 0) {
-        val outputRDD = rdd.repartition(partitionsEachInterval)
-        outputRDD.saveAsTextFile(outputDirectory + "/tweets_" + time.milliseconds.toString)
-        numTweetsCollected += count
-        if (numTweetsCollected > numTweetsToCollect) {
-          println
-          println("numTweetsCollected > numTweetsToCollect condition is reached. Stopping..." + numTweetsCollected + " " + count)
-          System.exit(0)
-        }
-      }
-    })
-*/
     ssc.start()
     ssc.awaitTermination()
 

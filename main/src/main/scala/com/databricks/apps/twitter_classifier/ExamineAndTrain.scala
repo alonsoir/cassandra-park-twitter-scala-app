@@ -21,7 +21,7 @@ object ExamineAndTrain {
     }
     val Array(tweetInput, outputModelDir, Utils.IntParam(numClusters), Utils.IntParam(numIterations)) = args
 
-    val conf = new SparkConf().setAppName(this.getClass.getSimpleName)
+    val conf = new SparkConf().setAppName(this.getClass.getSimpleName).setMaster("local[4]")
     val sc = new SparkContext(conf)
     val sqlContext = new SQLContext(sc)
 
@@ -49,6 +49,8 @@ object ExamineAndTrain {
 
     println("--- Training the model and persist it")
     val texts = sqlContext.sql("SELECT text from tweetTable").map(_.toString)
+
+    println("texts is: " + texts)
     // Cache the vectors RDD since it will be used for all the KMeans iterations.
     val vectors = texts.map(Utils.featurize).cache()
     vectors.count()  // Calls an action on the RDD to populate the vectors cache.

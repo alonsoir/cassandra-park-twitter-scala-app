@@ -73,26 +73,35 @@ object ExamineAndTrainWithMongo {
     
     //tweetsDF.show(5)
     
-    println("tweets in mongo instance: " + tweetsDF.count())
+    println("tweets saved in mongo instance: " + tweetsDF.count())
     println("actual schema is: ")
     tweetsDF.printSchema()
     println
     //tweetsDF.select("tweets").show(500)
 
-    // Register the DataFrames as a table.
+    // Register the DataFrames as a table. important! you must do it in order to work with stored data
     tweetsDF.registerTempTable("mytweets")
 
     // SQL statements can be run by using the sql methods provided by sqlContext.
-    //val results = sqlContext.sql("SELECT id,tweets FROM mytweets")
-
     // The results of SQL queries are DataFrames and support all the normal RDD operations.
     // The columns of a row in the result can be accessed by field index or by field name.
+
     //results.map(t => "id: " + t(0)).collect().foreach(println)
     //results.map(t => "tweets: " + t(1)).collect().foreach(println)
 
+    println("------Total count by id and tweets, count(*)---")
+    val sometweets = sqlContext.sql("SELECT id, tweets, COUNT(*) as cnt FROM mytweets GROUP BY id,tweets ORDER BY cnt DESC LIMIT 25").collect()
+
+    sometweets.foreach(println)
+
     println("--- Training the model and persist it")
+    
     val texts = sqlContext.sql("SELECT tweets from mytweets").map(_.toString)
-        // Cache the vectors RDD since it will be used for all the KMeans iterations.
+
+    //texts is: MapPartitionsRDD[15] at map at ExamineAndTrainWithMongo.scala:95
+    println("texts is: " + texts)
+    //val texts = sqlContext.sql("SELECT tweets from mytweets").map(jsonParser.parse(_.toString))
+    // Cache the vectors RDD since it will be used for all the KMeans iterations.
     val vectors = texts.map(Utils.featurize).cache()
     vectors.count()  // Calls an action on the RDD to populate the vectors cache.
     val model = KMeans.train(vectors, numClusters, numIterations)
@@ -112,5 +121,6 @@ object ExamineAndTrainWithMongo {
     
     closeMongoEnviroment(mongoClient)
     println("Closed mongodb connector...")
+    System.exit(0)
 }//main
 }//object ExamineAndTrainWithMongo
