@@ -132,8 +132,14 @@ TODO
 
 	3) update the others main objects provided by the reference-app, ExamineAndTrain.scala and Train.scala 
 	to read from Cassandra and Mongo instances and compare the results. IN PROGRESS...
+		ExamineAndTrain.scala DONE
+		Train.scala Not started
 
-	4) get fun in the process!
+	4) Add kafka support to store jsons into a topic, create two approaches:
+		Approach 1: Receiver-based Approach, spark streaming process dies when kafka ends to send data to spark process. Kafka producer is pushing data to spark streaming.
+		Approach 2: Direct Approach (No Receivers), spark streaming process is pulling data from kafka topic, it never dies.
+
+	5) get fun in the process!
 
 
 interesting links:
@@ -148,7 +154,9 @@ interesting links:
 
 	http://blog.optimal.io/how-to-find-the-schema-of-a-collection-in-mongodb/
 
+	http://spark.apache.org/docs/latest/streaming-kafka-integration.html
 
+	https://dzone.com/articles/the-more-i-gather-openapi-specs-the-more-i-realize
 
 Updating libraries to latest versions provokes an exception with Twitter4j! i still can stream tweets from twitter but the exception happens
 
